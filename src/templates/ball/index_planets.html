@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>弹簧连接多个物体</title>
+    <style>
+        body{
+            color:rgb(255,0,0)
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"width="1000"height="600"></canvas>
+    <textarea name="" id="log" cols="30" rows="10"></textarea>
+    <script src="../../util/util.js"></script>
+    <script src="../../models/ball.js"></script>
+    <script>
+        window.onload=function(){
+            var canvas=document.getElementById('canvas'),
+            context=canvas.getContext('2d'),
+            mouse=utils.captureMouse(canvas),
+            particles=[],
+            numParticles=2,
+            bounce=-0.6,
+            sun=new Ball(100,"#ffff00"),
+            planet=new Ball(10,"#00ff00");
+            sun.x=canvas.width/2;
+            sun.y=canvas.height/2;
+            sun.mass=10000;
+            particles.push(sun);
+            planet.x=canvas.width/2+100;
+            planet.y=canvas.height/2;
+            planet.vy=7;
+            planet.mass=1;
+            particles.push(planet);
+            // for(var size, particle,i=0;i<numParticles;i++){
+            //     size=Math.random()*20+5;
+
+            //     particle=new Ball(5);
+            //     particle.vx=Math.random()*0.3+0.1;
+            //     particle.vy=Math.random()*0.3+0.1;
+            //     particle.x=Math.random()*canvas.width;
+            //     particle.y=Math.random()*canvas.height;
+            //     particle.mass=size*0.1;
+            //     particles.push(particle);
+            // }
+            function draw(particle){
+                particle.draw(context);
+            }
+            //万有引力--计算两个球的速度
+            function gravitate(partA,partB){
+                var dx=partB.x-partA.x,
+                dy=partB.y-partA.y,
+                distSQ=dx*dx+dy*dy,
+                dist=Math.sqrt(distSQ),
+                force=partA.mass*partB.mass/distSQ,
+                forceX=force*dx/dist,//dx/dist=cos;dy/dist=sin
+                forceY=force*dy/dist;
+
+                partA.vx+=forceX/partA.mass;
+                partA.vy+=forceY/partA.mass;
+                partB.vx-=forceX/partB.mass;
+                partB.vy-=forceY/partB.mass;
+            }
+            //移动
+            function move(partA,i){
+                partA.x+=partA.vx;
+                partA.y+=partA.vy;
+                for(var partB,j=i+1;j<numParticles;j++){
+                    partB=particles[j];
+                    checkCollision(partA,partB);
+                    gravitate(partA,partB);
+                }
+            }
+            //旋转
+            function rotate(x,y,sin,cos,reverse){
+                return {
+                    x:(reverse)?(x*cos+y*sin):(x*cos-y*sin),
+                    y:(reverse)?(y*cos-x*sin):(y*cos+x*sin)
+                }
+            }
+            //碰撞检测
+            function checkCollision(ball0,ball1){
+                var dx=ball1.x-ball0.x,
+                dy=ball1.y-ball0.y,
+                dist=Math.sqrt(dx*dx+dy*dy);
+
+                if(dist<ball0.radius+ball1.radius){
+                    var angle=Math.atan2(dy,dx),
+                    sin=Math.sin(angle),
+                    cos=Math.cos(angle),
+                    //rotate ball0 pos
+                    pos0={x:0,y:0},
+
+                    //rotate ball1 pos
+                    pos1=rotate(dx,dy,sin,cos,true),
+
+                    //rotate ball0 v
+                    vel0=rotate(ball0.vx,ball0.vy,sin,cos,true),
+
+                    //rotate ball1 v
+                    vel1=rotate(ball1.vx,ball1.vy,sin,cos,true),
+
+                    //collision reaction
+
+                    vxTotal=vel0.x-vel1.x;
+                    vel0.x=((ball0.mass-ball1.mass)*vel0.x+2*ball1.mass*vel1.x)/(ball0.mass+ball1.mass);
+                    vel1.x=vxTotal+vel0.x;
+
+                    var absV=Math.abs(vel0.x)+Math.abs(vel1.x),
+                    overlap=(ball0.radius+ball1.radius)-Math.abs(pos0.x-pos1.x);
+                    pos0.x+=vel0.x/absV*overlap;
+                    pos1.x+=vel1.x/absV*overlap;
+
+                    //rotate back
+                    var pos0F=rotate(pos0.x,pos0.y,sin,cos,false),
+                    pos1F=rotate(pos1.x,pos1.y,sin,cos,false);
+                    
+                    //调整实际位置
+                    ball1.x=ball0.x+pos1F.x;
+                    ball1.y=ball0.y+pos1F.y;
+                    ball0.x=ball0.x+pos0F.x;
+                    ball0.y=ball0.y+pos0F.y;
+                    
+                    //rotate v back
+                    var vel0F=rotate(vel0.x,vel0.y,sin,cos,false),
+                    vel1F=rotate(vel1.x,vel1.y,sin,cos,false);
+                    ball0.vx=vel0F.x;
+                    ball0.vy=vel0F.y;
+                    ball1.vx=vel1F.x;
+                    ball1.vy=vel1F.y;
+                }
+            }
+            //边界检查
+            function checkWalls(ball){
+                if(ball.x+ball.radius>canvas.width){
+                    ball.x=canvas.width-ball.radius;
+                    ball.vx*=bounce;
+                }else if(ball.x-ball.radius<0){
+                    ball.x=ball.radius;
+                    ball.vx*=bounce;
+                }
+                if(ball.y+ball.radius>canvas.height){
+                    ball.y=canvas.height-ball.radius;
+                    ball.vy*=bounce;
+                }else if(ball.y-ball.radius<0){
+                    ball.y=ball.radius;
+                    ball.vy*=bounce;
+                }
+                
+            }
+            
+            
+            
+            (function drawFrame(){
+                animRequest=window.requestAnimationFrame(drawFrame,canvas);
+                context.clearRect(0,0,canvas.width,canvas.height);
+                particles.forEach(move);
+                particles.forEach(checkWalls);
+               particles.forEach(draw);
+            }());
+        }
+    </script>
+</body>
+</html>

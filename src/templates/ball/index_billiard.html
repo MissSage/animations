@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>弹簧连接多个物体</title>
+    <style>
+        body{
+            color:rgb(255,0,0)
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"width="1000"height="600"></canvas>
+    <textarea name="" id="log" cols="30" rows="10"></textarea>
+    <script src="../../util/util.js"></script>
+    <script src="../../models/ball.js"></script>
+    <script>
+        window.onload=function(){
+            var canvas=document.getElementById('canvas'),
+            context=canvas.getContext('2d'),
+            mouse=utils.captureMouse(canvas),
+            ball0=new Ball(400),
+            ball1=new Ball(20);
+            ball0.mass=20;
+            ball0.x=50;
+            ball0.y=canvas.height/2;
+            ball0.vx=1;
+            
+            ball1.mass=1;
+            ball1.x=700;
+            ball1.y=canvas.height/2;
+            ball1.vx=-1;
+            
+            (function drawFrame(){
+                animRequest=window.requestAnimationFrame(drawFrame,canvas);
+                context.clearRect(0,0,canvas.width,canvas.height);
+                
+                ball0.x+=ball0.vx;
+                ball1.x+=ball1.vx;
+                var dist=ball1.x-ball0.x;
+                if(Math.abs(dist)<ball0.radius+ball1.radius){
+                    //通过两球的速度和，已知一个球的速度，计算碰撞之后另一球的速度
+                    var vxTotal=ball0.vx-ball1.vx;
+                    ball0.vx=((ball0.mass-ball1.mass)*ball0.vx+2*ball1.mass*ball1.vx)/(ball0.mass+ball1.mass);
+                    ball1.vx=vxTotal+ball0.vx;
+                    ball0.x+=ball0.vx;
+                    ball1.x+=ball1.vx;
+                }
+                ball0.draw(context);
+                ball1.draw(context);
+            }());
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ball</title>
+</head>
+<body>
+    <canvas id="canvas"width="1000"height="600"></canvas>
+    <script src="../../util/util.js"></script>
+    <script src="../../models/ball.js"></script>
+    <script>
+        window.onload=function(){
+            var canvas=document.getElementById('canvas'),
+            context=canvas.getContext('2d'),
+            mouse=utils.captureMouse(canvas),
+            ball=new Ball(),
+            
+            vx=Math.random()*10-5,//水平方向速度，初始速度随机，-5~5
+            vy=0,//水平方向速度
+            bounce=-0.7,//反弹系数
+            gravity=0.2,//重力
+            friction=0.01,//摩擦力
+            isMouseDown=false;
+            ball.x=canvas.width/2;
+            ball.y=canvas.height/2;
+            
+            (function drawFrame(){
+                window.requestAnimationFrame(drawFrame,canvas);
+                context.clearRect(0,0,canvas.width,canvas.height);
+                if(!isMouseDown){
+                    checkBoundaries();
+                }
+                ball.draw(context);
+            }())
+            canvas.addEventListener('mousedown',function(){
+                if(utils.containsPoint(ball.getBounds(),mouse.x,mouse.y)){
+                    isMouseDown=true;
+                    canvas.addEventListener('mouseup',onMouseUp,false);
+                    canvas.addEventListener('mousemove',onMouseMove,false);
+                }
+            },false);
+            function onMouseMove(){
+                if(utils.containsPoint(ball.getBounds(),mouse.x,mouse.y)){
+                    ball.x=mouse.x;
+                    ball.y=mouse.y;
+                }
+            }
+            function onMouseUp(){
+                isMouseDown=false;
+                canvas.removeEventListener('mouseup',onMouseUp,false);
+                canvas.removeEventListener('mousemove',onMouseMove,false);
+            }
+            //摩擦力计算工式
+            function computeFVs(vx,vy,friction){
+                var speed=Math.sqrt(vx*vx+vy*vy),
+                angle=Math.atan2(vy,vx);
+                if(speed>friction){
+                    speed-=friction;
+                }else{
+                    speed=0;
+                }
+                vx=Math.cos(angle)*speed;
+                vy=Math.sin(angle)*speed;
+                return [vx,vy];
+            }
+            //判断边界，反弹
+            function checkBoundaries(){
+                var left=0,
+                right=canvas.width,
+                top=0,
+                bottom=canvas.height;
+                vy+=gravity;
+                //计算摩擦力
+                var Vs=computeFVs(vx,vy,friction);
+                if(Vs){
+                    vx=Vs[0];
+                    vy=Vs[1];
+                }
+                ball.x+=vx;
+                ball.y+=vy;
+
+                if(ball.x+ball.radius>right){
+                    ball.x=right-ball.radius;
+                    vx*=bounce;
+                }else if(ball.x-ball.radius<left){
+                    ball.x=left+ball.radius;
+                    vx*=bounce;
+                }
+                if(ball.y+ball.radius>bottom){
+                    ball.y=bottom-ball.radius;
+                    vy*=bounce;
+                }else if(ball.y-ball.radius<top){
+                    ball.y=top+ball.radius;
+                    vy*=bounce;
+                }
+            }
+        }
+    </script>
+</body>
+</html>

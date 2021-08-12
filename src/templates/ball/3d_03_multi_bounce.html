@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>反弹</title>
+</head>
+<body>
+    <canvas id="canvas"width="1000"height="600"></canvas>
+    <script src="../../util/util.js"></script>
+    <script src="../../models/ball3d.js"></script>
+    <script>
+        window.onload=function(){
+            var canvas=document.getElementById('canvas'),
+            context=canvas.getContext('2d'),
+            balls=[],
+            numBalls=50,
+            fl=250,
+            vpX=canvas.width/2,
+            vpY=canvas.height/2,
+            top=-200,
+            bottom=200,
+            left=-200,
+            right=200,
+            front=-100,
+            back=300,
+            bounce=-0.9,
+            airFriction=0.99;
+            function zSort(a,b){
+                return (b.zpos-a.zpos);
+            }
+            for(var ball,i=0;i<numBalls;i++){
+                ball=new Ball3d(15);
+                ball.vx=Math.random()*10-5;
+                ball.vy=Math.random()*10-5;
+                ball.vz=Math.random()*10-5;
+                balls.push(ball);
+            }
+            function move(ball){
+                ball.vx*=airFriction;
+                ball.vy*=airFriction;
+                ball.vz*=airFriction;
+
+                ball.xpos+=ball.vx;
+                ball.ypos+=ball.vy;
+                ball.zpos+=ball.vz;
+                if(ball.xpos+ball.radius>right){
+                    ball.xpos=right-ball.radius;
+                    ball.vx*=bounce;
+                }else if(ball.xpos-ball.radius<left){
+                    ball.xpos=left+ball.radius;
+                    ball.vx*=bounce;
+                }
+                if(ball.ypos+ball.radius>bottom){
+                    ball.ypos=bottom-ball.radius;
+                    ball.vy*=bounce;
+                }else if(ball.ypos-ball.radius<top){
+                    ball.ypos=top+ball.radius;
+                    ball.vy*=bounce;
+                }
+                if(ball.zpos+ball.radius>back){
+                    ball.zpos=back-ball.radius;
+                    ball.vz*=bounce;
+                }else if(ball.zpos-ball.radius<front){
+                    ball.zpos=front+ball.radius;
+                    ball.vz*=bounce;
+                }
+                if(ball.zpos>-fl){
+
+                var scale=fl/(fl+ball.zpos);
+                ball.scaleX=ball.scaleY=scale;
+                ball.x=vpX+ball.xpos*scale;
+                ball.y=vpY+ball.ypos*scale;
+                ball.visible=true;
+                }else {
+                    ball.visible=false;
+                }
+            }
+            function draw(ball){
+                if(ball.visible){
+                    ball.draw(context);
+                }
+            }
+            
+            (function drawFrame(){
+                window.requestAnimationFrame(drawFrame,canvas);
+                context.clearRect(0,0,canvas.width,canvas.height);
+                balls.forEach(move);
+                balls.sort(zSort);
+                balls.forEach(draw);
+            }())
+        }
+    </script>
+</body>
+</html>

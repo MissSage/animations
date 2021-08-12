@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>线</title>
+</head>
+<body>
+    <canvas id="canvas"width="1000"height="600"></canvas>
+    <script src="../../util/util.js"></script>
+    <script src="../../models/point3d.js"></script>
+    <script>
+        window.onload=function(){
+            var canvas=document.getElementById('canvas'),
+            context=canvas.getContext('2d'),
+            mouse=utils.captureMouse(canvas),
+            points=[],
+            numPoints=50,
+            fl=250,
+            vpX=canvas.width/2,
+            vpY=canvas.height/2,
+            angleX,
+            angleY;
+            for(var point,i=0;i<numPoints;i++){
+                point=new Point3d(Math.random()*200-100,Math.random()*200-100,Math.random()*200-100);
+                point.setVanishingPoint(vpX,vpY);
+                points.push(point);
+            }
+            function move(point,i){
+                point.rotateX(angleX);
+                point.rotateY(angleY);
+            }
+            function draw(point,i){
+                //ignore first point
+                if(i!=0){
+                    context.lineTo(point.getScreenX(),point.getScreenY());
+                }
+            }
+            (function drawFrame(){
+                window.requestAnimationFrame(drawFrame,canvas);
+                context.clearRect(0,0,canvas.width,canvas.height);
+                angleX=(mouse.y-vpY)*0.001;
+                angleY=(mouse.x-vpX)*0.001;
+                points.forEach(move);
+                context.beginPath();
+                context.moveTo(points[0].getScreenX(),points[0].getScreenY());
+                points.forEach(draw);
+                context.stroke();
+            }());
+        }
+    </script>
+</body>
+</html>

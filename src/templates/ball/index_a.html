@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ball</title>
+</head>
+<body>
+    <canvas id="canvas"width="1000"height="600"></canvas>
+    <script src="../../util/util.js"></script>
+    <script src="../../models/ball.js"></script>
+    <script>
+        window.onload=function(){
+            var canvas=document.getElementById('canvas'),
+            context=canvas.getContext('2d'),
+            ball=new Ball(),
+            g=0,//重力加速度
+            af=0.02,//摩擦加速度
+            vx=0,
+            vxmax=50,
+            vymax=50,
+            vy=0,
+            ax=0,
+            ay=0;
+            ball.x=50;
+            ball.y=100;
+            var move_A=function () {
+                var states = {
+                    37: function() {
+                        ax=-0.1;
+                    },
+                    38: function() {
+                        ay=-0.1;
+                    },
+                    39: function() {
+                        ax=0.1;
+                    },
+                    40: function() {
+                        ay=0.1;
+                    }
+                }
+
+                function show(result) {
+                    return states[result] && states[result]();
+                }
+                return {
+                    show: show
+                }
+            }();
+            
+            (function drawFrame(){
+                window.requestAnimationFrame(drawFrame,canvas);
+                context.clearRect(0,0,canvas.width,canvas.height);
+                //ball.y=canvas.height/2+Math.sin(angle)*50;
+                
+                vx+=ax;
+                vy+=ay;
+                //水平方向
+                if(ax<0){
+                    if(vx<-vxmax){
+                        vx=-vxmax;
+                    }else{
+                        vx>=0?vx=0:vx+=af;
+                    }
+                }else if(ax>0){
+                    if(vx>vxmax){
+                        vx=vxmax;
+                    }else{
+                        vx<=0?vx=0:vx+=-af;
+                    }
+                }else{
+                    if(vx>0){
+                        vx+=-af;
+                    }else if(vx<0){
+                        vx+=af;
+                    }
+                }
+                //垂直方向
+                if(ay<0){
+                    if(vy<-vymax){
+                        vy=-vymax;
+                    }else if(vy<0){//向上移动时
+                        vy+=af;//考虑摩擦力影响，受摩擦力向上
+                    }
+                    else if(vy==0){//至高点时
+                        //没有速度就不考虑摩擦力了
+                    }else{//向下移动时
+                        vy+=-af;//受摩擦力向上
+                    }
+                }else{
+                    if(vy>vymax){
+                        vy=vymax;
+                    }else if(vy<0){
+                        vy+=af;
+                    }
+                    else{
+                        vy+=-af;
+                    }
+                }
+                vy+=g;
+                ball.x+=vx;
+                ball.y+=vy;
+                ball.draw(context);
+            }())
+            window.addEventListener('keydown',function(event){
+                move_A.show(event.keyCode)
+                if(g!=0.06)
+                {
+                    g=0.06;
+                }
+            },false)
+            window.addEventListener('keyup',function(){
+                ax=0;
+                ay=0;
+            },false)
+        }
+    </script>
+</body>
+</html>

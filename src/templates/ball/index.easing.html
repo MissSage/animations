@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>缓动</title>
+</head>
+<body>
+    <canvas id="canvas"width="1000"height="600"></canvas>
+    <textarea name="" id="log" cols="30" rows="10"></textarea>
+    <script src="../../util/util.js"></script>
+    <script src="../../models/ball.js"></script>
+    <script>
+        window.onload=function(){
+            var canvas=document.getElementById('canvas'),
+            context=canvas.getContext('2d'),
+            mouse=utils.captureMouse(canvas),
+            log=document.getElementById("log"),
+            ball=new Ball(),
+            easing=0.05,
+            targetX=canvas.width/2,
+            targetY=canvas.height/2,
+            animRequest,
+            isMouseDown=false;
+            drawFrame()
+            canvas.addEventListener('mousedown',function(){
+                if(utils.containsPoint(ball.getBounds(),mouse.x,mouse.y)){
+                    isMouseDown=true;
+                    oldX=ball.x;
+                    oldY=ball.y;
+                    canvas.addEventListener('mouseup',onMouseUp,false);
+                    canvas.addEventListener('mousemove',onMouseMove,false);
+                }
+            },false);
+            function onMouseMove(){
+                ball.x=mouse.x;
+                ball.y=mouse.y;
+            }
+            function onMouseUp(){
+                isMouseDown=false;
+                if(!animRequest){
+                    animRequest=window.requestAnimationFrame(drawFrame,canvas);
+                }
+                canvas.removeEventListener('mouseup',onMouseUp,false);
+                canvas.removeEventListener('mousemove',onMouseMove,false);
+            }
+            function drawFrame(){
+                animRequest=window.requestAnimationFrame(drawFrame,canvas);
+                context.clearRect(0,0,canvas.width,canvas.height);
+                var dx=targetX-ball.x,
+                dy=targetY-ball.y;
+                ds=Math.sqrt(dx*dx+dy*dy);
+                if(!isMouseDown){
+                    if(ds<1){
+                        ball.x=targetX;
+                        ball.y=targetY;
+                        window.cancelRequestAnimationFrame(animRequest)
+                        log.value="Animation done"
+                    }else{
+                        var vx=dx*easing,
+                        vy=dy*easing;
+                        ball.x+=vx;
+                        ball.y+=vy;
+                    }
+                }
+                ball.draw(context);
+            }
+        }
+    </script>
+</body>
+</html>

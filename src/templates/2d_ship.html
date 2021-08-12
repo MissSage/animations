@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ball</title>
+    <style>
+        #canvas{
+            background-color: #000000;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"width="600"height="400"></canvas>
+    <script src="../util/util.js"></script>
+    <script src="../models/ship.js"></script>
+    <script>
+        window.onload=function(){
+            var canvas=document.getElementById('canvas'),
+            context=canvas.getContext('2d'),
+            ship=new Ship(),
+            vr=0,
+            vx=0,
+            vy=0,
+            speed=0,
+            angle=0,
+            thrust=0,
+            friction=0.01;
+            ship.x=50;
+            ship.y=100;
+            var move_A=function () {
+                var states = {
+                    37: function() {
+                        vr=-3;
+                    },
+                    38: function() {
+                        thrust=0.05;
+                        ship.showFlame=true;    
+                    },
+                    39: function() {
+                        vr=3;
+                    },
+                    // 40: function() {
+                    //     ay=0.1;
+                    // }
+                }
+
+                function show(result) {
+                    return states[result] && states[result]();
+                }
+                return {
+                    show: show
+                }
+            }();
+            
+            (function drawFrame(){
+                window.requestAnimationFrame(drawFrame,canvas);
+                context.clearRect(0,0,canvas.width,canvas.height);
+                ship.rotation+=vr*Math.PI/180;
+                var angle=ship.rotation,
+                ax=Math.cos(angle)*thrust,
+                ay=Math.sin(angle)*thrust,
+                left=0,
+                right=canvas.width,
+                top=0,
+                bottom=canvas.height;
+                vx+=ax;
+                vy+=ay;
+                speed=Math.sqrt(vx*vx+vy*vy);
+                angle=Math.atan2(vy,vx);
+                if(speed>friction){
+                    speed-=friction;
+                }else{
+                    speed=0;
+                }
+                vx=Math.cos(angle)*speed;
+                vy=Math.sin(angle)*speed;
+                ship.x+=vx;
+                ship.y+=vy;
+                //边界判断，左边出去则从右边进，上下也一样
+                if(ship.x-ship.width/2>right){
+                    ship.x=left-ship.width/2;
+                }else if(ship.x+ship.width/2<left){
+                    ship.x=right+ship.width/2;
+                }
+                if(ship.y-ship.height/2>bottom){
+                    ship.y=top-ship.height/2;
+                }else if(ship.y+ship.height/2<top){
+                    ship.y=bottom+ship.height/2;
+                }
+                ship.draw(context);
+            }())
+            window.addEventListener('keydown',function(event){
+                move_A.show(event.keyCode)
+            },false)
+            window.addEventListener('keyup',function(){
+                vr=0;
+                thrust=0;
+                ship.showFlame=false;
+            },false)
+        }
+    </script>
+</body>
+</html>

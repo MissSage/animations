@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>弹簧连接多个物体</title>
+    <style>
+        body{
+            color:rgb(255,0,0)
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"width="1000"height="600"></canvas>
+    <textarea name="" id="log" cols="30" rows="10"></textarea>
+    <script src="../../util/util.js"></script>
+    <script src="../../models/ball.js"></script>
+    <script>
+        window.onload=function(){
+            var canvas=document.getElementById('canvas'),
+            context=canvas.getContext('2d'),
+            mouse=utils.captureMouse(canvas),
+            ball0=new Ball(100,"#ff0000"),//red
+            ball1=new Ball(20,"#00ff00");//green
+            ball0.x=canvas.width/2;
+            ball0.y=canvas.height/2;
+            (function drawFrame(){
+                animRequest=window.requestAnimationFrame(drawFrame,canvas);
+                context.clearRect(0,0,canvas.width,canvas.height);
+                ball1.x=mouse.x;
+                ball1.y=mouse.y;
+                if(utils.intersects(ball0.getBounds(),ball1.getBounds())){
+                    log.value="Hit";
+
+                }else{
+                    log.value="";
+                }
+                ball0.draw(context);
+                ball1.draw(context);
+            }());
+        }
+    </script>
+</body>
+</html>

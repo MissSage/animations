@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>box碰撞检测</title>
+    <style>
+        body{
+            color:rgb(255,0,0)
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"width="400"height="400"></canvas>
+    <script src="../../util/util.js"></script>
+    <script src="../../models/box.js"></script>
+    <script>
+        window.onload=function(){
+            var canvas=document.getElementById('canvas'),
+            context=canvas.getContext('2d'),
+            mouse=utils.captureMouse(canvas),
+            boxes=[],
+            activeBox=createBox(),
+            gravity=0.2,
+            animRequest;
+            function createBox(){
+                var box=new Box(Math.random()*40+20,Math.random()*40+50);
+                box.x=Math.random()*(canvas.width-box.width);
+                box.y=0;
+                boxes.push(box);
+                return box;
+            }
+            function drawBox(box){
+                if(activeBox!==box&&utils.intersects(activeBox,box)){
+                    activeBox.y=box.y-activeBox.height;
+                    activeBox=createBox();
+                }
+                box.draw(context);
+            }
+            (function drawFrame(){
+                animRequest=window.requestAnimationFrame(drawFrame,canvas);
+                context.clearRect(0,0,canvas.width,canvas.height);
+                
+                activeBox.vy+=gravity;
+                activeBox.y+=activeBox.vy;
+                if(activeBox.y+activeBox.height>canvas.height){
+                    activeBox.y=canvas.height-activeBox.height;
+                    activeBox=createBox();
+                }
+                boxes.forEach(drawBox);
+            }());
+        }
+    </script>
+</body>
+</html>

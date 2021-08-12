@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ball</title>
+</head>
+<body>
+    <canvas id="canvas"width="1000"height="400"></canvas>
+    <textarea name="" id="log" cols="100" rows="10"></textarea>
+    <script src="../../util/util.js"></script>
+    <script src="../../models/ball.js"></script>
+    <script>
+        window.onload=function(){
+            var canvas=document.getElementById('canvas'),
+            context=canvas.getContext('2d'),
+            mouse=utils.captureMouse(canvas),
+            log=document.getElementById('log'),
+            ball=new Ball();
+            
+            ball.x=50;
+            ball.y=100;
+            canvas.addEventListener('mousedown',function(){
+                if(utils.containsPoint(ball.getBounds(),mouse.x,mouse.y)){
+                    log.value="in ball: mousedown";
+                    canvas.addEventListener('mouseup',onMouseUp,false);
+                    canvas.addEventListener('mousemove',onMouseMove,false);
+                }else{
+                    log.value="canvas:mousedown";
+                }
+            },false);
+            function onMouseMove(){
+                ball.x=mouse.x;
+                ball.y=mouse.y;
+            }
+            function onMouseUp(){
+                canvas.removeEventListener('mouseup',onMouseUp,false);
+                canvas.removeEventListener('mousemove',onMouseMove,false);
+
+            }
+            (function drawFrame(){
+                window.requestAnimationFrame(drawFrame,canvas);
+                context.clearRect(0,0,canvas.width,canvas.height);
+                ball.draw(context);
+            }());
+            // canvas.addEventListener('mouseup',function(){
+            //     if(utils.containsPoint(ball.getBounds(),mouse.x,mouse.y)){
+            //         log.value="in ball: mouseup";
+            //     }else{
+            //         log.value="canvas: mouseup";
+            //     }
+            // },false);
+            // canvas.addEventListener('mousemove',function(){
+            //     if(utils.containsPoint(ball.getBounds(),mouse.x,mouse.y)){
+            //         log.value="in ball: mousemove";
+            //     }else{
+            //         log.value="canvas: mousemove";
+            //     }
+            // },false);
+
+            //绑定触摸事件
+            // var touch=utils.captureTouch(canvas);
+            // canvas.addEventListener('touchstart',function(event){
+            //     event.preventDefault();
+            //     if(utils.containsPoint(ball.getBounds(),touch.x,touch.y)){
+            //         log.value='in ball: touchstart';
+            //     }else{
+            //         log.value='canvas: touchstart';
+            //     }
+            // },false);
+            // canvas.addEventListener('touchend',function(event){
+            //     event.preventDefault();
+            //     log.value='in ball: touchend';
+            // },false);
+            // canvas.addEventListener('touchmove',function(event){
+            //     event.preventDefault();
+            //     if(utils.containsPoint(ball.getBounds(),touch.x,touch.y)){
+            //         log.value='in ball: touchmove';
+            //     }else{
+            //         log.value='canvas: touchmove';
+            //     }
+            // },false);
+        }
+    </script>
+</body>
+</html>

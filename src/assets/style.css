@@ -1,0 +1,22 @@
+
+html,body {
+  background-color: #bbb;
+  color: #383838;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.demo-list{
+  list-style: none;
+}
+#canvas {
+  width: 1000px;
+  height: 600px;
+  margin: 0 auto;
+  background-color: #fff;
+  border-radius: 5px;
+  box-shadow: gray 0 0 3px;
+}
+

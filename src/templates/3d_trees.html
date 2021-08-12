@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ball</title>
+    <style>
+        #canvas{
+            background-color: #000000;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"width="1000"height="600"></canvas>
+    <script src="../util/util.js"></script>
+    <script src="../models/tree.js"></script>
+    <script>
+        window.onload=function(){
+            var canvas=document.getElementById('canvas'),
+            context=canvas.getContext('2d'),
+            trees=[],
+            numTrees=100,
+            fl=250,
+            vpX=canvas.width/2,
+            vpY=canvas.height/2,
+            floor=200,
+            ax=0,
+            ay=0,
+            az=0,
+            vz=0,
+            vx=0,
+            vy=0,
+            zmax=5000,//缓存最远距离
+            gravity=0.01,
+            friction=0.98;
+            
+            for(var tree,i=0;i<numTrees;i++){
+                tree=new Tree();
+                tree.xpos=Math.random()*2000-1000;
+                tree.ypos=floor
+                tree.zpos=Math.random()*zmax;
+                trees.push(tree);
+            }
+            window.addEventListener('keydown',function(event){
+                switch (event.keyCode) {
+                    case 37:
+                        //左
+                        ax=1;
+                        break;
+                    case 38:
+                        //上
+                        az=-1;
+                        break;
+                    case 39:
+                        //右
+                        ax=-1;
+                        break;
+                    case 40:
+                        //下
+                        az=1;
+                        break;
+                    case 32:
+                        //space
+                        ay=0.02;
+                        break;
+                }
+            },false)
+            window.addEventListener('keyup',function(event){
+                switch (event.keyCode) {
+                    case 37:
+                    case 39:
+                        ax=0;
+                        break;
+                    case 38:
+                    case 40:
+                        az=0;
+                        break;
+                    case 32:
+                        ay=0;
+                        break;
+                }
+            },false)
+            function move(tree){
+                tree.xpos+=vx;
+                tree.ypos+=vy;
+                tree.zpos+=vz;
+                if(tree.zpos<-fl){
+                    tree.zpos+=zmax;
+                }
+                if(tree.zpos>zmax-fl){
+                    tree.zpos-=zmax;
+                }
+                //限制下落的距离
+                if(tree.ypos<100){
+                    tree.ypos=100;
+                }
+                var scale=fl/(fl+tree.zpos);
+                tree.scaleX=tree.scaleY=scale;
+                tree.x=vpX+tree.xpos*scale;
+                tree.y=vpY+tree.ypos*scale;
+                tree.alpha=scale;
+            }
+            function zSort(a,b){
+                return (b.zpos-a.zpos);
+            }
+            function draw(tree){
+                tree.draw(context);
+            }
+            
+            (function drawFrame(){
+                window.requestAnimationFrame(drawFrame,canvas);
+                context.clearRect(0,0,canvas.width,canvas.height);
+                vx+=ax;
+                vy+=ay;
+                vz+=az;
+                vy-=gravity;
+                trees.forEach(move);
+                vx*=friction;
+                vy*=friction;
+                vz*=friction;
+                vz*=friction;
+                trees.sort(zSort);
+                trees.forEach(draw);
+            }())
+        }
+    </script>
+</body>
+</html>

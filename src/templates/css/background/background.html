@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Background</title>
+    <link rel="stylesheet" href="./background.css">
+</head>
+<body>
+    <h3>线性渐变</h3>
+    <div class="box jianbian1"></div>
+    <h3>从指定两头开始渐变的距离，渐变区间：20%~80%</h3>
+    <div class="box jianbian2"></div>
+    <h3>当渐变区间无限小时，渐变就看起来像是一条线了，渐变区间：50%~50%</h3>
+    <div class="box jianbian3"></div>
+    <h3>我们可以尝试缩小背景高度并让其重复(默认重复)，来获取条纹,条纹高度：15px</h3>
+    <div class="box tiaowen1"></div>
+    <h3>如果某个色标的位置值比整个列表中在它之前的色标的位置值都要小，
+    则该色标的位置值会被设置为它前面所有色标位置值的最大值,
+    这意味着如果我们把第二个色标的位置值设置为 0，
+    那它的位置就总是会被浏览器调整为前一个色标的位置值</h3>
+    <h3>我们可以利用这一点来简化代码，尤其是在创建多种颜色的渐变时</h3>
+    <div class="box tiaowen2"></div>
+    <h3>垂直条纹 使用to right 或者 90deg</h3>
+    <div class="box chuizhitiaowen"></div>
+    <h3>斜向条纹45deg</h3>
+    <div class="box xiexiangtiaowen1"></div>
+    <h3>斜向条纹60deg</h3>
+    <div class="box xiexiangtiaowen2"></div>
+    <h3>斜向条纹2 45deg</h3>
+    <div class="box xiexiangtiaowen3"></div>
+    <h3>适用于条纹的重复线性渐变优化斜向条纹 45deg</h3>
+    <div class="box repeatxiexiangtiaowen1"></div>
+    <h3>适用于条纹的重复线性渐变优化斜向条纹 60deg</h3>
+    <div class="box repeatxiexiangtiaowen2"></div>
+    <h3>适用于条纹的重复线性渐变优化斜向条纹 60deg 简化版</h3>
+    <div class="box repeatxiexiangtiaowen3"></div>
+    <h3>同色系条纹 -- 两种颜色</h3>
+    <div class="box tongsexi1"></div>
+    <h3>同色系条纹 -- 一种颜色，不同深浅</h3>
+    <div class="box tongsexi2"></div>
+    <h3>渐变绘制网格 -- 同一色系，两种颜色</h3>
+    <div class="box grid1"></div>
+    <h3>渐变绘制网格 -- 同一颜色，不同深浅</h3>
+    <div class="box grid2"></div>
+    <h3>径向渐变 -- 波点</h3>
+    <div class="box bodian1"></div>
+    <h3>径向渐变 -- 波点</h3>
+    <div class="box bodian2"></div>
+    <h3>棋盘1</h3>
+    <div class="box qipan1"></div>
+    <h3>棋盘2</h3>
+    <div class="box qipan2"></div>
+    <h3>棋盘3 -- svg</h3>
+    <svg xmlns="http://www.w3.org/2000/svg"
+        width="100" height="100" fill-opacity=".25"
+    >
+        <rect x="50" width="50" height="50"></rect>
+        <rect y="50" width="50" height="50"></rect>
+    </svg>
+    
+    <h3>棋盘4 -- svg in style</h3>
+    <div class="box qipansvg"></div>
+</body>
+</html>

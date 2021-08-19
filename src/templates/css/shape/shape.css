@@ -251,3 +251,51 @@ main{
         background-color: #655;
     }
 }
+@keyframes fillup {
+    to{
+        stroke-dasharray: 158 158;
+    }
+}
+.svg-circle1{
+    fill:yellowgreen;
+    stroke: #655;
+    stroke-width: 30;
+}
+.svg-circle2{
+    fill:yellowgreen;
+    stroke: #655;
+    stroke-width: 30;
+    stroke-dasharray: 20 10;
+}
+.svg-circle3{
+    fill:yellowgreen;
+    stroke: #655;
+    stroke-width: 50;
+    stroke-dasharray: 60 158; /* 2pi*25 ≈ 158*/
+}
+.svg1{
+    transform: rotate(-90deg);
+    background: yellowgreen;
+    border-radius: 50%;
+}
+.svg-circle4{
+    fill:yellowgreen;
+    stroke: #655;
+    stroke-width: 50;
+    stroke-dasharray: 0 158; /* 2pi*25 ≈ 158*/
+    animation: fillup 5s linear infinite;
+}
+.svg2{
+    width: 100px;
+    height: 100px;
+
+    transform: rotate(-90deg);
+    background: yellowgreen;
+    border-radius: 50%;
+}
+.svg-circle5{
+    fill:yellowgreen;
+    stroke: #655;
+    stroke-width: 32;
+    stroke-dasharray: 75 100; /* 将得到比率为38的扇区 */
+}

@@ -156,7 +156,7 @@
     padding: 1em;
     border: 16px solid transparent;
     
-    border-image:32 repeating-linear-gradient(-45deg,red 0,red 1em,transparent 0,transparent 2em,#58a 0, #58a 3em, transparent 0, transparent 4em);
+    border-image:32 repeating-linear-gradient(-45deg,red 0,red 1em,transparent 0,transparent 2em,#58a 0, #58a 3em, transparent 0, transparent 4em) 0 / 5em 5em;
 }
 .marching-ants{
     padding: 1em;

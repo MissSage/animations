@@ -1,0 +1,140 @@
+.list-row{
+    display: inline-flex;
+    flex-wrap: wrap;
+}
+.btn{
+    width: 80px;
+    height: 38px;
+    margin:10px 15px
+    
+}
+.crosshair{
+    cursor: crosshair;
+}
+.help{
+    cursor: help;
+}
+.move{
+    cursor: move;
+}
+.pointer{
+    cursor: pointer;
+}
+.progress{
+    cursor: progress;
+}
+.text{
+    cursor: text;
+}
+.wait{
+    cursor: wait;
+}
+.e-resize{
+    cursor: e-resize;
+}
+.ne-resize{
+    cursor: ne-resize;
+}
+.nw-resize{
+    cursor: nw-resize;
+}
+.n-resize{
+    cursor: n-resize;
+}
+.se-resize{
+    cursor: se-resize;
+}
+.sw-resize{
+    cursor: sw-resize;
+}
+.s-resize{
+    cursor: s-resize;
+}
+.w-resize{
+    cursor: w-resize;
+}
+.none{
+    cursor: none;
+}
+.context-menu{
+    cursor: context-menu;
+}
+.cell{
+    cursor: cell;
+}
+.vertical-text{
+    cursor: vertical-text;
+}
+.alias{
+    cursor: alias;
+}
+.copy{
+    cursor: copy;
+}
+.no-drop{
+    cursor: no-drop;
+}
+.not-allowed{
+    cursor: not-allowed;
+}
+.ew-resize{
+    cursor: ew-resize;
+}
+.ns-resize{
+    cursor: ns-resize;
+}
+.nesw-resize{
+    cursor: nesw-resize;
+}
+.nwse-resize{
+    cursor: nwse-resize;
+}
+.col-resize{
+    cursor: col-resize;
+}
+.row-resize{
+    cursor: row-resize;
+}
+.all-scroll{
+    cursor: all-scroll;
+}
+.zoom-in{
+    cursor: zoom-in;
+}
+.zoom-out{
+    cursor: zoom-out;
+}
+.btn-extended1{
+    width: 80px;
+    cursor: pointer;
+    position: relative;
+    text-align: center;
+    line-height: 38px;
+    border: 1px solid gray;
+}
+.btn-extended1::before{
+    content:'';
+    position: absolute;
+    top:-10px;right:-10px;
+    bottom:-10px;left:-10px;
+}
+.btn-extended2{
+    width: 80px;
+    cursor: pointer;
+    text-align: center;
+    line-height: 38px;
+    border: 1px solid gray;
+}
+
+input[type="checkbox"]+label::before{
+    content:'\a0';/* 不换行空格 */
+    display:inline-block;
+    vertical-align: .2em;
+    width:.8em;
+    height:.8em;
+    margin-right: .2em;
+    border-radius: .2em;
+    background:silver;
+    text-indent: .15em;
+    line-height: .65;
+}

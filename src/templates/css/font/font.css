@@ -1,0 +1,13 @@
+
+.circular{
+    width: 30em;
+    height: 30em;
+    margin: 3em auto 0;
+}
+.circular path{
+    fill:none;
+}
+.circular svg{
+    display: block;
+    overflow: visible;
+}

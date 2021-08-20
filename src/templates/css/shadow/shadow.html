@@ -19,15 +19,45 @@
     <div class="box shadow-box drop-shadows2">Content</div>
     <div class="box shadow-box drop-shadows3">Content</div>
     <h3>毛玻璃</h3>
-    <div class="imgbox filter-blur">
+    <div class="imgbox">
         <div class="imgbox-content">
-            <div>
-                afdfasfaffafaasdf
-            </div>
-            <footer class="imgbox-footer">
-                - <cite>dlSFLSDKFJ,aGAgfdg sdg s</cite>
-            </footer>
+            <blockquote>“The only way to get rid of a temptation is to yield to it. Resist it, and your soul grows sick with longing for the things it has forbidden to itself, with desire for what its monstrous laws have made monstrous and unlawful.”</em>
+                <footer>— <cite>Oscar Wilde, The Picture of Dorian Gray</cite></footer>
+            </blockquote>
         </div>
     </div>
+    <h3>折角效果</h3>
+    <div class="box paper1"></div>
+    <h3>圆角的折角效果</h3>
+    <div class="box paper2"></div>
+    <i>折角效果有一个缺点，就是代码不够dry,比如在修改折角大小或折角角度时，不仅需要修改多处代码，并且需要做一些复杂的计算，所以可以的话，可以使用预处理器的mixin</i>
+    <pre>
+        @mixin paper-corner($background,$size,$angle:30deg){
+            position:relative;
+            background:$background;
+            background:linear-gradient($angle - 180deg,
+            transparent $size, $background 0);
+            border-radius:.5em;
+            $x:$size / sin($angle);
+            $y:$size / cos($angle);
+            &:before{
+                content:'';
+                position:absolute;
+                top:0;right:0;
+                background:linear-gradient(to left bottom,transparent 50%,rgba(0,0,0,.2) 0,rgba(0,0,0,.4)) 100% 0 no-repeat;
+                width:$y;height:$x;
+                transfrom:translateY($y - $x) rotate(2*$angle - 90deg);
+                transform-origin:bottom right;
+                border-bottom-left-radius:inherit;
+                box-shadow:-.2em .2em .3em -.1em rgba(0,0,0,.2);
+            }
+        }
+    </pre>
+    <i>使用时：</i>
+    <pre>
+        .paper{
+            @include paper-corner(#58a,.2em,40deg);
+        }
+    </pre>
 </body>
 </html>
